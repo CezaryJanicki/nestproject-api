@@ -1,17 +1,18 @@
 import {
   Controller,
-  Delete,
   Get,
+  Put,
   Param,
   ParseUUIDPipe,
+  NotFoundException,
+  Delete,
   Post,
   Body,
-  Put,
 } from '@nestjs/common';
+import { CreateOrderDTO } from 'src/orders/dtos/create-order.dto';
+import { UpdateOrderDTO } from 'src/orders/dtos/update-order.dto';
 import { OrdersService } from './orders.service';
-import { NotFoundException } from '@nestjs/common';
-import { UpdateOrderDTO } from './dtos/update-order.dto';
-import { CreateOrderDTO } from './dtos/create-order.dto';
+import Order from '@prisma/client';
 
 @Controller('orders')
 export class OrdersController {
@@ -26,13 +27,13 @@ export class OrdersController {
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
     const order = await this.ordersService.getById(id);
     if (!order) throw new NotFoundException('Order not found');
-    return order;
+    return this.ordersService.getById(id);
   }
 
   @Delete('/:id')
-  async deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
-    if (!(await this.ordersService.getById(id)))
-      throw new NotFoundException('Order not found');
+  public async deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const order = await this.ordersService.getById(id);
+    if (!order) throw new NotFoundException('Order not found');
     await this.ordersService.deleteById(id);
     return { success: true };
   }

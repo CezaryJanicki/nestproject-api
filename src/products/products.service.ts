@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Product } from '@prisma/client';
 import { PrismaService } from 'src/shared/services/prisma.service';
+import { Product } from '@prisma/client';
 
 @Injectable()
 export class ProductsService {
@@ -8,6 +8,19 @@ export class ProductsService {
 
   public getAll(): Promise<Product[]> {
     return this.prismaService.product.findMany();
+  }
+
+  public getAllExtended(): Promise<Product[]> {
+    return this.prismaService.product.findMany({
+      include: { orders: true },
+    });
+  }
+
+  public getExtendedById(id: Product['id']): Promise<Product | null> {
+    return this.prismaService.product.findUnique({
+      where: { id },
+      include: { orders: true },
+    });
   }
 
   public getById(id: Product['id']): Promise<Product | null> {
@@ -37,19 +50,6 @@ export class ProductsService {
     return this.prismaService.product.update({
       where: { id },
       data: productData,
-    });
-  }
-
-  public getAllExtended(): Promise<Product[]> {
-    return this.prismaService.product.findMany({
-      include: { orders: true },
-    });
-  }
-
-  public getByIdExtended(id: Product['id']): Promise<Product | null> {
-    return this.prismaService.product.findUnique({
-      where: { id },
-      include: { orders: true },
     });
   }
 }

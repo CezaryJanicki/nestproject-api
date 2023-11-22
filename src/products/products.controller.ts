@@ -1,17 +1,39 @@
-import { Controller, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { CreateProductDTO } from './dtos/create-product.dto';
 import { ProductsService } from './products.service';
-import { Param, Delete, Body } from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { UpdateProductDTO } from './dtos/update-product.dto';
-import { NotFoundException } from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService) {
+    this.productsService = productsService;
+  }
 
   @Get('/')
-  getAll(): any {
+  public getAny(): any {
     return this.productsService.getAll();
+  }
+
+  @Get('/extended')
+  getAllExtended(): any {
+    return this.productsService.getAllExtended();
+  }
+
+  @Get('/extended/:id')
+  async getExtendedById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const prod = await this.productsService.getExtendedById(id);
+    if (!prod) throw new NotFoundException('Product not found');
+    return prod;
   }
 
   @Get('/:id')
@@ -30,32 +52,18 @@ export class ProductsController {
   }
 
   @Post('/')
-  create(@Body() productData) {
+  create(@Body() productData: CreateProductDTO) {
     return this.productsService.create(productData);
   }
+
   @Put('/:id')
-  async update(
+  public async updateById(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() productData: UpdateProductDTO,
   ) {
-    if (!(await this.productsService.getById(id)))
+    if (await !this.productsService.getById(id))
       throw new NotFoundException('Product not found');
-
     await this.productsService.updateById(id, productData);
     return { success: true };
-  }
-
-  @Get('/products/extended')
-  async getAllExtended(): Promise<any> {
-    return this.productsService.getAllExtended();
-  }
-
-  @Get('/products/extended/:id')
-  async getByIdExtended(
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ): Promise<any> {
-    const prod = await this.productsService.getByIdExtended(id);
-    if (!prod) throw new NotFoundException('Product not found');
-    return prod;
   }
 }
