@@ -2,6 +2,16 @@
 import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
+db.$connect().then(() => {
+  console.log('Connected to database');
+  db.client.findMany().then((clients) => { console.log(clients); });
+  db.product.findMany().then((products) => { console.log(products); });
+  db.order.findMany().then((orders) => { console.log(orders); });
+  
+  db.$disconnect();
+}
+);
+
 function getProducts() {
   return [
     {
