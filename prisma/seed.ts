@@ -7,7 +7,7 @@ db.$connect().then(() => {
   db.client.findMany().then((clients) => { console.log(clients); });
   db.product.findMany().then((products) => { console.log(products); });
   db.order.findMany().then((orders) => { console.log(orders); });
-  
+
   db.$disconnect();
 }
 );
@@ -51,17 +51,17 @@ function getOrders() {
   return [
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17260',
-      clientId: 'fd205551-0f0d-4a9f-bc41-c559c8a17288',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a17288',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17261',
-      clientId: 'fd205551-0f0d-4a9f-bc41-c559c8a17289',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a17289',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17262',
-      clientId: 'fd205551-0f0d-4a9f-bc41-c559c8a17299',
+      clientId: 'fd105551-0f0d-4a9f-bc41-c559c8a17299',
       productId: '01c7599d-318b-4b9f-baf7-51f3a936a2d4',
     },
   ];
